@@ -74,7 +74,7 @@ const LayerCard = ({
         <div className="flex-1 min-w-0 py-1">
           <div className="flex items-center justify-between mb-1">
             <span className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
-              Layer {layerNumber}
+              Pathway {layerNumber}
             </span>
             {status === 'in-progress' && (
               <span className="flex items-center text-xs font-medium text-primary animate-pulse">
@@ -98,9 +98,13 @@ const LayerCard = ({
                 <span>Progress</span>
                 <span className="font-medium text-foreground">{Math.round(progressPercentage)}%</span>
               </div>
-              <Progress value={progressPercentage} className="h-2 bg-muted/50" indicatorClassName={cn(
-                status === 'complete' ? "bg-success" : "bg-primary"
+              <Progress value={progressPercentage} className={cn(
+                "h-2 bg-muted/50",
+                status === 'complete' ? "[&>div]:bg-success" : "[&>div]:bg-primary"
               )} />
+              <p className="text-xs text-muted-foreground mt-1">
+                {progress.completed}/{progress.total} steps completed
+              </p>
             </div>
           )}
 
@@ -120,7 +124,7 @@ const LayerCard = ({
 
             {status === 'complete' && (
               <div className="text-sm text-success font-medium flex items-center">
-                All pathways completed
+                All steps completed
               </div>
             )}
           </div>

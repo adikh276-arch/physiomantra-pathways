@@ -120,20 +120,7 @@ export const ProgressProvider: React.FC<{ children: ReactNode }> = ({ children }
   };
 
   const isLayerUnlocked = (layer: keyof Omit<ProgressState, 'primaryGoal' | 'userName'>) => {
-    switch (layer) {
-      case 'layer1':
-        return true;
-      case 'layer2':
-        return isLayerComplete('layer1');
-      case 'layer3':
-        return isLayerComplete('layer2');
-      case 'layer4':
-        return isLayerComplete('layer2');
-      case 'layer5':
-        return true; // Always active
-      default:
-        return false;
-    }
+    return true; // All layers unlocked by default
   };
 
   const getLayerProgress = (layer: keyof Omit<ProgressState, 'primaryGoal' | 'userName'>) => {

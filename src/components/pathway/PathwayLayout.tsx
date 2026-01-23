@@ -42,10 +42,10 @@ const PathwayLayout = ({
           )}
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
             <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
-              Layer {layerNumber}
+              Pathway {layerNumber}
             </span>
             <span>•</span>
-            <span>Pathway {pathwayNumber}</span>
+            <span>Step {pathwayNumber}</span>
           </div>
           <h1 className="text-2xl md:text-3xl font-bold text-foreground">{title}</h1>
         </div>

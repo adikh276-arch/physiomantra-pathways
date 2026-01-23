@@ -177,15 +177,15 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="flex justify-center pt-8">
+        <div className="flex justify-center pt-8 pb-12">
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
             onClick={resetProgress}
-            className="text-muted-foreground hover:text-destructive opacity-50 hover:opacity-100 transition-opacity"
+            className="text-muted-foreground hover:text-destructive hover:border-destructive transition-colors"
           >
-            <RotateCcw className="w-4 h-4 mr-1" />
-            Reset Progress
+            <RotateCcw className="w-4 h-4 mr-2" />
+            Reset All Progress
           </Button>
         </div>
       </div>
