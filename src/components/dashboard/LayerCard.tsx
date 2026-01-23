@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { Check, Lock, ChevronRight, Loader2, Star, Shield, Zap, Building, Users, LucideIcon } from 'lucide-react';
+import { Check, Lock, ChevronRight, Loader2, Star, Shield, Zap, Building, Users, type LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 
