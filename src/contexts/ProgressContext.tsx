@@ -119,7 +119,16 @@ const ProgressContext = createContext<ProgressContextType | undefined>(undefined
 export const ProgressProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [progress, setProgress] = useState<ProgressState>(() => {
     const stored = localStorage.getItem('physiomantra_progress');
-    return stored ? JSON.parse(stored) : initialState;
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        // Merge with initialState to ensure new layers are present
+        return { ...initialState, ...parsed, layer0: parsed.layer0 || initialState.layer0, layer6: parsed.layer6 || initialState.layer6 };
+      } catch (e) {
+        return initialState;
+      }
+    }
+    return initialState;
   });
 
   useEffect(() => {
