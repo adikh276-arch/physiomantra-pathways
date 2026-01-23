@@ -153,18 +153,19 @@ const Dashboard = () => {
   return (
     <DashboardLayout>
       <div className="max-w-3xl mx-auto px-6 py-12 space-y-12">
-        {/* Header */}
-        <div className="space-y-6 text-center">
-          <div className="inline-flex items-center justify-center p-3 bg-primary/10 rounded-2xl mb-4">
-            <span className="text-2xl font-bold text-primary">PM</span>
+        {/* Header - Enhanced */}
+        <div className="space-y-8 text-center relative z-10">
+          <div className="inline-flex items-center justify-center p-4 bg-gradient-to-br from-primary/20 to-accent/20 rounded-3xl mb-2 backdrop-blur-sm border border-white/50 shadow-inner">
+            <span className="text-3xl font-black text-primary tracking-tighter">PM</span>
           </div>
 
-          <div className="space-y-2">
-            <h1 className="text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl">
-              PhysioMantra Provider Pathways
+          <div className="space-y-4">
+            <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl bg-clip-text text-transparent bg-gradient-to-r from-primary via-blue-600 to-accent animate-in fade-in slide-in-from-bottom-4 duration-1000">
+              PhysioMantra <br className="sm:hidden" />
+              <span className="text-foreground">Provider Pathways</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Your roadmap to becoming a top-tier provider.
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              Your professional roadmap to becoming a <span className="font-semibold text-primary">top-tier provider</span> and building a thriving practice.
             </p>
           </div>
 

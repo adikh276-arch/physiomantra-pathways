@@ -27,24 +27,11 @@ const LayerCard = ({
   customIcon: CustomIcon,
 }: LayerCardProps) => {
   const isLocked = status === 'locked';
+  const isComplete = status === 'complete';
+  const isInProgress = status === 'in-progress';
 
   // Layer icons mapping
   const LayerIcon = CustomIcon || [Shield, Zap, Users, Building, Star][layerNumber - 1] || Star;
-
-  const getStatusStyles = () => {
-    switch (status) {
-      case 'complete':
-        return 'border-success/50 bg-card hover:border-success shadow-sm ring-1 ring-success/10';
-      case 'in-progress':
-        return 'border-primary/50 bg-card shadow-md shadow-primary/5 ring-1 ring-primary/20';
-      case 'active':
-        return 'border-accent/50 bg-card hover:border-accent shadow-sm ring-1 ring-accent/10';
-      case 'locked':
-        return 'border-border/50 bg-muted/20 opacity-60 grayscale';
-      default:
-        return 'border-border bg-card';
-    }
-  };
 
   const progressPercentage = progress
     ? (progress.completed / progress.total) * 100
@@ -53,82 +40,89 @@ const LayerCard = ({
   return (
     <div
       className={cn(
-        'group relative rounded-2xl border p-6 transition-all duration-300',
-        getStatusStyles(),
-        !isLocked && 'hover:-translate-y-1 hover:shadow-xl cursor-pointer',
-        status === 'in-progress' && 'scale-[1.02] border-primary/40'
+        'group relative rounded-2xl border bg-card p-6 transition-all duration-300',
+        'border-border/60 shadow-sm', // Default elegant border
+        !isLocked && 'hover:-translate-y-1 hover:shadow-xl hover:border-primary/30 cursor-pointer',
+        isInProgress && 'ring-1 ring-primary/20 border-primary/40', // Subtle highlight for active
+        isLocked && 'opacity-60 grayscale bg-muted/10'
       )}
       onClick={!isLocked ? onClick : undefined}
     >
       <div className="flex gap-5">
-        {/* Icon Box */}
+        {/* Icon Box - Unified Theme */}
         <div className={cn(
-          "flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center text-xl shadow-sm transition-colors",
-          status === 'complete' ? "bg-success text-white shadow-success/20" :
-            status === 'in-progress' ? "bg-primary text-white shadow-primary/30" :
-              status === 'active' ? "bg-accent text-white" :
-                "bg-muted text-muted-foreground"
+          "flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center text-xl shadow-sm transition-colors",
+          "bg-gradient-to-br from-primary/10 to-primary/5 text-primary border border-primary/10",
+          isComplete && "from-success/10 to-success/5 text-success border-success/10",
+          isLocked && "bg-muted text-muted-foreground border-transparent"
         )}>
-          {status === 'complete' ? <Check className="w-6 h-6" /> :
-            status === 'locked' ? <Lock className="w-5 h-5" /> :
+          {isComplete ? <Check className="w-6 h-6" /> :
+            isLocked ? <Lock className="w-5 h-5" /> :
               <LayerIcon className="w-6 h-6" />
           }
         </div>
 
         <div className="flex-1 min-w-0 py-1">
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
               {customLabel || `Pathway ${layerNumber}`}
             </span>
-            {status === 'in-progress' && (
-              <span className="flex items-center text-xs font-medium text-primary animate-pulse">
-                <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-                In Progress
+
+            {/* Status Chips */}
+            {isInProgress && (
+              <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-bold border border-primary/20">
+                <Loader2 className="w-3 h-3 animate-spin" />
+                IN PROGRESS
+              </span>
+            )}
+            {isComplete && (
+              <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-success/10 text-success text-[10px] font-bold border border-success/20">
+                <Check className="w-3 h-3" />
+                COMPLETE
+              </span>
+            )}
+            {status === 'active' && (
+              <span className="px-2.5 py-0.5 rounded-full bg-accent/10 text-accent text-[10px] font-bold border border-accent/20">
+                AVAILABLE
               </span>
             )}
           </div>
 
           <h3 className={cn(
-            "text-lg font-bold transition-colors",
-            status === 'locked' ? "text-muted-foreground" : "text-foreground group-hover:text-primary"
+            "text-xl font-bold transition-colors mb-4",
+            isLocked ? "text-muted-foreground" : "text-foreground group-hover:text-primary"
           )}>
             {title}
           </h3>
 
           {/* Progress Section */}
           {!isLocked && progress && (
-            <div className="mt-4 space-y-2">
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>Progress</span>
-                <span className="font-medium text-foreground">{Math.round(progressPercentage)}%</span>
+            <div className="space-y-3">
+              <div className="h-2 w-full bg-muted/30 rounded-full overflow-hidden">
+                <div
+                  className={cn("h-full transition-all duration-500 rounded-full", isComplete ? "bg-success" : "bg-primary")}
+                  style={{ width: `${progressPercentage}%` }}
+                />
               </div>
-              <Progress value={progressPercentage} className={cn(
-                "h-2 bg-muted/50",
-                status === 'complete' ? "[&>div]:bg-success" : "[&>div]:bg-primary"
-              )} />
-              <p className="text-xs text-muted-foreground mt-1">
-                {progress.completed}/{progress.total} steps completed
-              </p>
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-muted-foreground font-medium">{progress.completed} of {progress.total} steps</span>
+                <span className="font-bold text-foreground">{Math.round(progressPercentage)}%</span>
+              </div>
             </div>
           )}
 
           {/* Next Step / Status messages */}
-          <div className="mt-3">
-            {nextStep && status === 'in-progress' && (
-              <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-xs text-primary font-medium">
+          <div className="mt-4 flex items-center gap-3">
+            {nextStep && isInProgress && (
+              <div className="flex items-center gap-2 text-sm text-foreground/80 font-medium">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                 Next: {nextStep}
               </div>
             )}
 
             {unlockCondition && isLocked && (
-              <div className="text-sm text-muted-foreground bg-muted/50 inline-block px-2 py-1 rounded">
-                🔒 {unlockCondition}
-              </div>
-            )}
-
-            {status === 'complete' && (
-              <div className="text-sm text-success font-medium flex items-center">
-                All steps completed
+              <div className="text-xs font-medium text-muted-foreground bg-muted/50 px-2 py-1 rounded border">
+                🔒 Requires: {unlockCondition}
               </div>
             )}
           </div>
@@ -137,9 +131,9 @@ const LayerCard = ({
         {/* Action Arrow */}
         {!isLocked && (
           <div className="self-center hidden sm:flex">
-            <Button size="icon" variant="ghost" className="rounded-full text-muted-foreground group-hover:text-primary group-hover:bg-primary/10 transition-all">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-muted-foreground/30 group-hover:text-primary group-hover:bg-primary/5 transition-all">
               <ChevronRight className="w-5 h-5" />
-            </Button>
+            </div>
           </div>
         )}
       </div>
