@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { Check, Lock, ChevronRight, Loader2 } from 'lucide-react';
+import { Check, Lock, ChevronRight, Loader2, Star, Shield, Zap, Building, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 
@@ -22,18 +22,24 @@ const LayerCard = ({
   unlockCondition,
   onClick,
 }: LayerCardProps) => {
-  const statusStyles = {
-    complete: 'border-success/30 bg-success/5',
-    'in-progress': 'border-primary/30 bg-primary/5',
-    locked: 'border-locked/30 bg-locked/5 opacity-75',
-    active: 'border-accent/30 bg-accent/5',
-  };
+  const isLocked = status === 'locked';
 
-  const statusIcons = {
-    complete: <Check className="w-5 h-5 text-success" />,
-    'in-progress': <Loader2 className="w-5 h-5 text-primary animate-spin" />,
-    locked: <Lock className="w-5 h-5 text-locked" />,
-    active: <span className="text-accent text-lg">⭐</span>,
+  // Layer icons mapping
+  const LayerIcon = [Shield, Zap, Users, Building, Star][layerNumber - 1] || Star;
+
+  const getStatusStyles = () => {
+    switch (status) {
+      case 'complete':
+        return 'border-success/20 bg-success/5 hover:border-success/40';
+      case 'in-progress':
+        return 'border-primary/20 bg-white shadow-lg shadow-primary/5 ring-1 ring-primary/10';
+      case 'active':
+        return 'border-accent/20 bg-accent/5';
+      case 'locked':
+        return 'border-border/50 bg-muted/20 opacity-60 grayscale';
+      default:
+        return 'border-border bg-card';
+    }
   };
 
   const progressPercentage = progress
@@ -43,60 +49,91 @@ const LayerCard = ({
   return (
     <div
       className={cn(
-        'rounded-xl border-2 p-4 transition-all duration-200',
-        statusStyles[status],
-        status !== 'locked' && 'hover:shadow-card cursor-pointer'
+        'group relative rounded-2xl border p-6 transition-all duration-300',
+        getStatusStyles(),
+        !isLocked && 'hover:-translate-y-1 hover:shadow-xl cursor-pointer',
+        status === 'in-progress' && 'scale-[1.02] border-primary/40'
       )}
-      onClick={status !== 'locked' ? onClick : undefined}
+      onClick={!isLocked ? onClick : undefined}
     >
-      <div className="flex items-start gap-4">
-        <div className="flex-shrink-0">{statusIcons[status]}</div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-muted-foreground">
-              Layer {layerNumber}:
+      <div className="flex gap-5">
+        {/* Icon Box */}
+        <div className={cn(
+          "flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center text-xl shadow-sm transition-colors",
+          status === 'complete' ? "bg-success text-white shadow-success/20" :
+            status === 'in-progress' ? "bg-primary text-white shadow-primary/30" :
+              status === 'active' ? "bg-accent text-white" :
+                "bg-muted text-muted-foreground"
+        )}>
+          {status === 'complete' ? <Check className="w-6 h-6" /> :
+            status === 'locked' ? <Lock className="w-5 h-5" /> :
+              <span className="font-bold">{layerNumber}</span>
+          }
+        </div>
+
+        <div className="flex-1 min-w-0 py-1">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
+              Layer {layerNumber}
             </span>
-            <span className="font-semibold text-foreground">{title}</span>
-            {status === 'complete' && (
-              <span className="text-xs text-success font-medium">(COMPLETE)</span>
-            )}
             {status === 'in-progress' && (
-              <span className="text-xs text-primary font-medium">(IN PROGRESS)</span>
+              <span className="flex items-center text-xs font-medium text-primary animate-pulse">
+                <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                In Progress
+              </span>
             )}
           </div>
 
-          {progress && status !== 'locked' && (
-            <div className="mt-2 space-y-1">
-              <Progress value={progressPercentage} className="h-2" />
-              <p className="text-xs text-muted-foreground">
-                {progress.completed}/{progress.total} pathways completed
-              </p>
+          <h3 className={cn(
+            "text-lg font-bold transition-colors",
+            status === 'locked' ? "text-muted-foreground" : "text-foreground group-hover:text-primary"
+          )}>
+            {title}
+          </h3>
+
+          {/* Progress Section */}
+          {!isLocked && progress && (
+            <div className="mt-4 space-y-2">
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>Progress</span>
+                <span className="font-medium text-foreground">{Math.round(progressPercentage)}%</span>
+              </div>
+              <Progress value={progressPercentage} className="h-2 bg-muted/50" indicatorClassName={cn(
+                status === 'complete' ? "bg-success" : "bg-primary"
+              )} />
             </div>
           )}
 
-          {nextStep && status === 'in-progress' && (
-            <p className="mt-2 text-sm text-muted-foreground">
-              Next: <span className="text-foreground">{nextStep}</span>
-            </p>
-          )}
+          {/* Next Step / Status messages */}
+          <div className="mt-3">
+            {nextStep && status === 'in-progress' && (
+              <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-xs text-primary font-medium">
+                Next: {nextStep}
+              </div>
+            )}
 
-          {unlockCondition && status === 'locked' && (
-            <p className="mt-1 text-sm text-locked-foreground">
-              Unlock by: {unlockCondition}
-            </p>
-          )}
+            {unlockCondition && isLocked && (
+              <div className="text-sm text-muted-foreground bg-muted/50 inline-block px-2 py-1 rounded">
+                🔒 {unlockCondition}
+              </div>
+            )}
 
-          {status !== 'locked' && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="mt-2 p-0 h-auto text-primary hover:text-primary/80"
-            >
-              {status === 'complete' ? 'Review' : 'Continue'}
-              <ChevronRight className="w-4 h-4 ml-1" />
-            </Button>
-          )}
+            {status === 'complete' && (
+              <div className="text-sm text-success font-medium flex items-center">
+                All pathways completed
+              </div>
+            )}
+          </div>
         </div>
+
+        {/* Action Arrow */}
+        {!isLocked && (
+          <div className="self-center hidden sm:flex">
+            <Button size="icon" variant="ghost" className="rounded-full text-muted-foreground group-hover:text-primary group-hover:bg-primary/10 transition-all">
+              <ChevronRight className="w-5 h-5" />
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -14,9 +14,9 @@ const Badge = ({ label, variant = 'verified' }: BadgeProps) => {
   };
 
   const styles = {
-    verified: 'bg-success/10 text-success border-success/20',
-    achievement: 'bg-accent/10 text-accent border-accent/20',
-    special: 'bg-primary/10 text-primary border-primary/20',
+    verified: 'bg-success/10 text-success border-success/20 shadow-sm shadow-success/5',
+    achievement: 'bg-accent/10 text-accent border-accent/20 shadow-sm shadow-accent/5',
+    special: 'bg-primary/10 text-primary border-primary/20 shadow-sm shadow-primary/5',
   };
 
   const Icon = icons[variant];
@@ -24,7 +24,7 @@ const Badge = ({ label, variant = 'verified' }: BadgeProps) => {
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium border',
+        'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-transform hover:scale-105 select-none',
         styles[variant]
       )}
     >

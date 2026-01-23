@@ -7,11 +7,6 @@ import { ProgressProvider } from "@/contexts/ProgressContext";
 
 // Main Pages
 import Dashboard from "./pages/Dashboard";
-import Sessions from "./pages/Sessions";
-import Earnings from "./pages/Earnings";
-import Corporate from "./pages/Corporate";
-import Community from "./pages/Community";
-import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 // Layer 1 Pathways
@@ -55,11 +50,6 @@ const App = () => (
           <Routes>
             {/* Main Routes */}
             <Route path="/" element={<Dashboard />} />
-            <Route path="/sessions" element={<Sessions />} />
-            <Route path="/earnings" element={<Earnings />} />
-            <Route path="/corporate" element={<Corporate />} />
-            <Route path="/community" element={<Community />} />
-            <Route path="/profile" element={<Profile />} />
 
             {/* Layer 1: Foundation */}
             <Route path="/layer1/welcome" element={<WelcomePathway />} />

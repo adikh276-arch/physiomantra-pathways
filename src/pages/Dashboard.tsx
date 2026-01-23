@@ -1,12 +1,10 @@
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import TrustScore from '@/components/dashboard/TrustScore';
-import QuickStats from '@/components/dashboard/QuickStats';
 import Badge from '@/components/dashboard/Badge';
 import LayerCard from '@/components/dashboard/LayerCard';
 import { useProgress } from '@/contexts/ProgressContext';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { RotateCcw } from 'lucide-react';
+import { RotateCcw, Target } from 'lucide-react';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -26,7 +24,7 @@ const Dashboard = () => {
   const getLayer1Status = () => {
     if (isLayerComplete('layer1')) return 'complete';
     if (layer1Progress.completed > 0) return 'in-progress';
-    return 'in-progress';
+    return 'in-progress'; // default to enabled
   };
 
   const getLayer2Status = () => {
@@ -108,47 +106,34 @@ const Dashboard = () => {
 
   return (
     <DashboardLayout>
-      <div className="p-4 md:p-8 max-w-4xl mx-auto space-y-8">
+      <div className="max-w-3xl mx-auto px-6 py-12 space-y-12">
         {/* Header */}
-        <div className="space-y-4">
-          <div className="flex items-start justify-between">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-                Welcome back, Dr. {progress.userName}!
-              </h1>
-              <div className="mt-2">
-                <TrustScore score={75} />
-              </div>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={resetProgress}
-              className="text-muted-foreground hover:text-destructive"
-            >
-              <RotateCcw className="w-4 h-4 mr-1" />
-              Reset
-            </Button>
+        <div className="space-y-6 text-center">
+          <div className="inline-flex items-center justify-center p-3 bg-primary/10 rounded-2xl mb-4">
+            <span className="text-2xl font-bold text-primary">PM</span>
           </div>
-          <div className="flex flex-wrap gap-2">
+
+          <div className="space-y-2">
+            <h1 className="text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl">
+              PhysioMantra Navigator
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Your roadmap to becoming a top-tier provider.
+            </p>
+          </div>
+
+          <div className="flex items-center justify-center gap-3">
             {isLayerComplete('layer1') && <Badge label="Verified Physio" variant="verified" />}
             {isLayerComplete('layer1') && <Badge label="Foundation Master" variant="achievement" />}
             {isLayerComplete('layer2') && <Badge label="Patient Builder" variant="special" />}
           </div>
         </div>
 
-        {/* Quick Stats */}
-        <div>
-          <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-            📊 Quick Stats <span className="text-sm font-normal text-muted-foreground">(Dummy Data)</span>
-          </h2>
-          <QuickStats />
-        </div>
-
         {/* Growth Journey */}
-        <div>
-          <h2 className="text-lg font-semibold text-foreground mb-4">🎯 Your Growth Journey</h2>
-          <div className="space-y-4">
+        <div className="relative">
+          <div className="absolute left-[28px] top-6 bottom-6 w-0.5 bg-border/50 -z-10 hidden sm:block"></div>
+
+          <div className="space-y-8">
             <LayerCard
               layerNumber={1}
               title="Foundation & Credibility"
@@ -185,11 +170,23 @@ const Dashboard = () => {
             <LayerCard
               layerNumber={5}
               title="Community & Leadership"
-              status="active"
-              nextStep="Jan 30, 7 PM - Next training"
+              status="active" // Always visible/active for preview, or logic based on layer 4
+              nextStep="Join the community"
               onClick={handleLayer5Click}
             />
           </div>
+        </div>
+
+        <div className="flex justify-center pt-8">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={resetProgress}
+            className="text-muted-foreground hover:text-destructive opacity-50 hover:opacity-100 transition-opacity"
+          >
+            <RotateCcw className="w-4 h-4 mr-1" />
+            Reset Progress
+          </Button>
         </div>
       </div>
     </DashboardLayout>
