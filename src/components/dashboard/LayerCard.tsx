@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { Check, Lock, ChevronRight, Loader2, Star, Shield, Zap, Building, Users } from 'lucide-react';
+import { Check, Lock, ChevronRight, Loader2, Star, Shield, Zap, Building, Users, LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 
@@ -11,6 +11,8 @@ interface LayerCardProps {
   nextStep?: string;
   unlockCondition?: string;
   onClick?: () => void;
+  customLabel?: string;
+  customIcon?: LucideIcon;
 }
 
 const LayerCard = ({
@@ -21,18 +23,20 @@ const LayerCard = ({
   nextStep,
   unlockCondition,
   onClick,
+  customLabel,
+  customIcon: CustomIcon,
 }: LayerCardProps) => {
   const isLocked = status === 'locked';
 
   // Layer icons mapping
-  const LayerIcon = [Shield, Zap, Users, Building, Star][layerNumber - 1] || Star;
+  const LayerIcon = CustomIcon || [Shield, Zap, Users, Building, Star][layerNumber - 1] || Star;
 
   const getStatusStyles = () => {
     switch (status) {
       case 'complete':
         return 'border-success/20 bg-success/5 hover:border-success/40';
       case 'in-progress':
-        return 'border-primary/20 bg-white shadow-lg shadow-primary/5 ring-1 ring-primary/10';
+        return 'border-primary/20 bg-card shadow-lg shadow-primary/5 ring-1 ring-primary/10';
       case 'active':
         return 'border-accent/20 bg-accent/5';
       case 'locked':
@@ -67,14 +71,14 @@ const LayerCard = ({
         )}>
           {status === 'complete' ? <Check className="w-6 h-6" /> :
             status === 'locked' ? <Lock className="w-5 h-5" /> :
-              <span className="font-bold">{layerNumber}</span>
+              <LayerIcon className="w-6 h-6" />
           }
         </div>
 
         <div className="flex-1 min-w-0 py-1">
           <div className="flex items-center justify-between mb-1">
             <span className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
-              Pathway {layerNumber}
+              {customLabel || `Pathway ${layerNumber}`}
             </span>
             {status === 'in-progress' && (
               <span className="flex items-center text-xs font-medium text-primary animate-pulse">

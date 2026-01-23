@@ -4,7 +4,7 @@ import LayerCard from '@/components/dashboard/LayerCard';
 import { useProgress } from '@/contexts/ProgressContext';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { RotateCcw } from 'lucide-react';
+import { RotateCcw, GraduationCap, Award } from 'lucide-react';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -202,8 +202,9 @@ const Dashboard = () => {
         </div>
 
         {/* Growth Journey */}
-        <div className="relative">
-          <div className="absolute left-[28px] top-6 bottom-6 w-0.5 bg-border/50 -z-10 hidden sm:block"></div>
+        <div className="relative pl-4 sm:pl-0">
+          {/* Vertical Timeline Line */}
+          <div className="absolute left-[24px] sm:left-[28px] top-6 bottom-6 w-[2px] bg-gradient-to-b from-primary/20 via-primary/40 to-primary/20 -z-10 hidden sm:block"></div>
 
           <div className="space-y-8">
             <LayerCard
@@ -213,6 +214,8 @@ const Dashboard = () => {
               progress={layer0Progress}
               nextStep={getNextLayer0Step()}
               onClick={handleLayer0Click}
+              customLabel="Intern Track"
+              customIcon={GraduationCap}
             />
             <LayerCard
               layerNumber={1}
@@ -261,6 +264,8 @@ const Dashboard = () => {
               progress={layer6Progress}
               nextStep={getNextLayer6Step()}
               onClick={handleLayer6Click}
+              customLabel="Mentorship Program"
+              customIcon={Award}
             />
           </div>
         </div>
