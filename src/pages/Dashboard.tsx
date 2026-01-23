@@ -161,7 +161,7 @@ const Dashboard = () => {
 
           <div className="space-y-2">
             <h1 className="text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl">
-              PhysioMantra Navigator
+              PhysioMantra Provider Pathways
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Your roadmap to becoming a top-tier provider.
