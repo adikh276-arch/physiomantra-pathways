@@ -18,27 +18,27 @@
     --popover: 0 0% 100%;
     --popover-foreground: 202 30% 15%;
 
-    /* Primary - Sky Blue #36B3FD */
-    --primary: 202 98% 60%;
+    /* Primary - Medical Blue / Trust */
+    --primary: 215 90% 52%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary - Warm Sand */
-    --secondary: 35 40% 94%;
-    --secondary-foreground: 200 30% 20%;
+    /* Secondary - Cool Neutral */
+    --secondary: 210 20% 96%;
+    --secondary-foreground: 222 47% 11%;
 
     /* Muted - Cool Gray */
-    --muted: 200 15% 94%;
-    --muted-foreground: 200 15% 45%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-    /* Accent - Warm Orange for progress/achievements */
-    --accent: 24 95% 53%;
+    /* Accent - Teal/Cyan (Growth) instead of Orange */
+    --accent: 175 80% 40%;
     --accent-foreground: 0 0% 100%;
 
-    /* Success - Green for completed states */
-    --success: 142 72% 40%;
+    /* Success - Emerald */
+    --success: 150 80% 40%;
     --success-foreground: 0 0% 100%;
 
-    /* Warning - Amber for in-progress */
+    /* Warning - Amber (kept for alerts only) */
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 10%;
 
@@ -47,32 +47,32 @@
     --destructive-foreground: 0 0% 100%;
 
     /* Locked state - Gray */
-    --locked: 200 10% 70%;
-    --locked-foreground: 200 10% 40%;
+    --locked: 210 10% 80%;
+    --locked-foreground: 215 10% 50%;
 
-    --border: 200 20% 88%;
-    --input: 200 20% 88%;
-    --ring: 202 98% 60%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 215 90% 52%;
 
     --radius: 0.75rem;
 
     /* Sidebar */
-    --sidebar-background: 202 35% 18%;
-    --sidebar-foreground: 202 15% 95%;
-    --sidebar-primary: 202 50% 70%;
+    --sidebar-background: 215 40% 15%;
+    --sidebar-foreground: 210 20% 98%;
+    --sidebar-primary: 215 90% 52%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 202 40% 25%;
-    --sidebar-accent-foreground: 202 15% 95%;
-    --sidebar-border: 202 30% 25%;
-    --sidebar-ring: 202 76% 50%;
+    --sidebar-accent: 215 30% 25%;
+    --sidebar-accent-foreground: 210 20% 98%;
+    --sidebar-border: 215 30% 25%;
+    --sidebar-ring: 215 90% 52%;
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(202 98% 60%), hsl(202 80% 50%));
-    --gradient-success: linear-gradient(135deg, hsl(142 72% 40%), hsl(160 70% 45%));
-    --gradient-accent: linear-gradient(135deg, hsl(24 95% 53%), hsl(35 90% 55%));
-    --gradient-sidebar: linear-gradient(180deg, hsl(202 35% 18%), hsl(209 30% 12%));
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(202 20% 98%));
-    --gradient-hero: linear-gradient(135deg, hsl(202 40% 20%), hsl(202 35% 25%));
+    --gradient-primary: linear-gradient(135deg, hsl(215 90% 52%), hsl(200 90% 50%));
+    --gradient-success: linear-gradient(135deg, hsl(150 80% 40%), hsl(160 80% 45%));
+    --gradient-accent: linear-gradient(135deg, hsl(175 80% 40%), hsl(190 90% 50%));
+    --gradient-sidebar: linear-gradient(180deg, hsl(215 40% 15%), hsl(220 40% 10%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(210 20% 98%));
+    --gradient-hero: linear-gradient(135deg, hsl(215 40% 20%), hsl(215 35% 25%));
   }
 
   .dark {
@@ -85,42 +85,50 @@
     --popover: 200 25% 12%;
     --popover-foreground: 160 15% 95%;
 
-    --primary: 202 70% 50%;
+    /* Primary - Medical Blue / Trust (Vibrant) */
+    --primary: 215 90% 55%;
     --primary-foreground: 200 30% 10%;
 
-    --secondary: 200 20% 18%;
+    /* Secondary */
+    --secondary: 215 20% 18%;
     --secondary-foreground: 160 15% 90%;
 
-    --muted: 200 20% 18%;
-    --muted-foreground: 200 15% 60%;
+    /* Muted */
+    --muted: 215 20% 18%;
+    --muted-foreground: 215 15% 65%;
 
-    --accent: 24 90% 55%;
+    /* Accent - Teal/Cyan (Vibrant) */
+    --accent: 175 80% 50%;
     --accent-foreground: 0 0% 100%;
 
-    --success: 142 65% 50%;
+    /* Success - Emerald */
+    --success: 150 70% 50%;
     --success-foreground: 0 0% 100%;
 
+    /* Warning - Amber */
     --warning: 38 90% 55%;
     --warning-foreground: 0 0% 10%;
 
-    --destructive: 0 70% 50%;
+    /* Destructive */
+    --destructive: 0 70% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --locked: 200 10% 40%;
-    --locked-foreground: 200 10% 60%;
+    /* Locked */
+    --locked: 215 10% 40%;
+    --locked-foreground: 215 10% 60%;
 
-    --border: 200 20% 20%;
-    --input: 200 20% 20%;
-    --ring: 202 70% 50%;
+    --border: 215 20% 20%;
+    --input: 215 20% 20%;
+    --ring: 215 80% 55%;
 
     --sidebar-background: 200 30% 8%;
     --sidebar-foreground: 160 15% 95%;
-    --sidebar-primary: 202 70% 50%;
+    --sidebar-primary: 215 80% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 200 25% 15%;
+    --sidebar-accent: 215 25% 15%;
     --sidebar-accent-foreground: 160 15% 95%;
-    --sidebar-border: 200 20% 18%;
-    --sidebar-ring: 202 70% 50%;
+    --sidebar-border: 215 20% 18%;
+    --sidebar-ring: 215 80% 55%;
   }
 }
 
