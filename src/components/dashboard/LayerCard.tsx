@@ -34,11 +34,11 @@ const LayerCard = ({
   const getStatusStyles = () => {
     switch (status) {
       case 'complete':
-        return 'border-success/20 bg-success/5 hover:border-success/40';
+        return 'border-success/50 bg-card hover:border-success shadow-sm ring-1 ring-success/10';
       case 'in-progress':
-        return 'border-primary/20 bg-card shadow-lg shadow-primary/5 ring-1 ring-primary/10';
+        return 'border-primary/50 bg-card shadow-md shadow-primary/5 ring-1 ring-primary/20';
       case 'active':
-        return 'border-accent/20 bg-accent/5';
+        return 'border-accent/50 bg-card hover:border-accent shadow-sm ring-1 ring-accent/10';
       case 'locked':
         return 'border-border/50 bg-muted/20 opacity-60 grayscale';
       default:
