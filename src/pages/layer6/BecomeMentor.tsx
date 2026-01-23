@@ -7,7 +7,9 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useProgress } from '@/contexts/ProgressContext';
 import { toast } from 'sonner';
-import { Trophy, TrendingUp, Users, ShieldCheck } from 'lucide-react';
+import { Trophy, TrendingUp, Users, ShieldCheck, Briefcase } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 const BecomeMentor = () => {
     const { completePathway } = useProgress();
@@ -42,6 +44,37 @@ const BecomeMentor = () => {
                         </ul>
                     </div>
                 </div>
+
+                {/* Micro-Agency Teaser */}
+                <Card className="p-4 border-l-4 border-l-indigo-500 bg-gradient-to-r from-indigo-500/5 to-transparent">
+                    <div className="flex justify-between items-start">
+                        <div className="space-y-1">
+                            <h3 className="font-bold flex items-center gap-2 text-indigo-700">
+                                <Briefcase className="w-5 h-5" />
+                                Next Level: Micro-Agency Partner
+                            </h3>
+                            <p className="text-sm text-foreground/80">
+                                Run your own local operation tailored for high-performers.
+                            </p>
+                        </div>
+                        <Badge className="bg-indigo-500 hover:bg-indigo-600">Coming Soon</Badge>
+                    </div>
+
+                    <div className="grid sm:grid-cols-3 gap-3 mt-4 text-sm">
+                        <div className="bg-background/60 p-2 rounded border">
+                            <strong>Manage 5-10 Interns</strong>
+                            <p className="text-xs text-muted-foreground">Build your own team</p>
+                        </div>
+                        <div className="bg-background/60 p-2 rounded border">
+                            <strong>Local Ops Control</strong>
+                            <p className="text-xs text-muted-foreground">Handle 1-2 corporate accounts</p>
+                        </div>
+                        <div className="bg-background/60 p-2 rounded border">
+                            <strong>Revenue Share</strong>
+                            <p className="text-xs text-muted-foreground">Earn % of total pod revenue</p>
+                        </div>
+                    </div>
+                </Card>
 
                 <div>
                     <h3 className="text-lg font-semibold mb-4">Mentor Benefits</h3>

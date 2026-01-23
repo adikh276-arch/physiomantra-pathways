@@ -3,7 +3,7 @@ import { Check, Award, Star } from 'lucide-react';
 
 interface BadgeProps {
   label: string;
-  variant?: 'verified' | 'achievement' | 'special';
+  variant?: 'verified' | 'achievement' | 'special' | 'partner';
 }
 
 const Badge = ({ label, variant = 'verified' }: BadgeProps) => {
@@ -11,12 +11,14 @@ const Badge = ({ label, variant = 'verified' }: BadgeProps) => {
     verified: Check,
     achievement: Award,
     special: Star,
+    partner: Star,
   };
 
   const styles = {
     verified: 'bg-success/10 text-success border-success/20 shadow-sm shadow-success/5',
     achievement: 'bg-accent/10 text-accent border-accent/20 shadow-sm shadow-accent/5',
     special: 'bg-primary/10 text-primary border-primary/20 shadow-sm shadow-primary/5',
+    partner: 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20 shadow-sm shadow-indigo-500/5',
   };
 
   const Icon = icons[variant];

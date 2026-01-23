@@ -16,6 +16,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { Megaphone, Zap } from 'lucide-react';
+import { Card } from '@/components/ui/card';
 
 const tips = [
   {
@@ -100,6 +102,29 @@ const LocalAwarenessPathway = () => {
         completeButtonText="Done - I've read the tips"
       >
         <div className="space-y-6">
+
+          {/* New: Marketing Credits Banner */}
+          <Card className="p-4 bg-gradient-to-r from-purple-500/10 to-blue-500/10 border-none shadow-sm space-y-3">
+            <div className="flex items-center gap-2 text-primary font-bold">
+              <Megaphone className="w-5 h-5" />
+              <h3>Pay-for-Performance Ads</h3>
+            </div>
+            <p className="text-sm text-foreground">
+              Don't waste money on ads. Earn <strong>₹2,000–₹5,000 ad credits</strong> (run by Mantra) when you perform.
+            </p>
+            <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+              <div className="bg-background/50 p-2 rounded flex items-center gap-1">
+                <Zap className="w-3 h-3 text-warning" /> Add 5 Patients
+              </div>
+              <div className="bg-background/50 p-2 rounded flex items-center gap-1">
+                <Zap className="w-3 h-3 text-warning" /> Close 1 Corporate
+              </div>
+            </div>
+            <div className="text-right">
+              <span className="text-xs font-medium text-primary cursor-pointer hover:underline">View Rewards Criteria →</span>
+            </div>
+          </Card>
+
           <p className="text-muted-foreground">Simple ways to get more patients:</p>
 
           <Accordion type="single" collapsible className="space-y-2">

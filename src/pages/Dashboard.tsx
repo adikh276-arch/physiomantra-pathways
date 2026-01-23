@@ -168,10 +168,36 @@ const Dashboard = () => {
             </p>
           </div>
 
-          <div className="flex items-center justify-center gap-3">
-            {isLayerComplete('layer1') && <Badge label="Verified Physio" variant="verified" />}
-            {isLayerComplete('layer1') && <Badge label="Foundation Master" variant="achievement" />}
-            {isLayerComplete('layer2') && <Badge label="Patient Builder" variant="special" />}
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              {isLayerComplete('layer1') && <Badge label="Verified Physio" variant="verified" />}
+              {isLayerComplete('layer2') && <Badge label="Patient Builder" variant="special" />}
+              {isLayerComplete('layer4') && <Badge label="City Health Partner" variant="partner" />}
+            </div>
+
+            {/* Physio Business Score */}
+            {isLayerComplete('layer1') && (
+              <div className="bg-card border shadow-sm rounded-xl p-4 w-full max-w-md mx-auto animate-fade-in">
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className="font-bold text-lg">Physio Business Score</h3>
+                  <span className="text-2xl font-black text-primary">72/100</span>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>Patient flow</span>
+                    <span className="font-medium text-foreground">18/25</span>
+                  </div>
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>Outreach activity</span>
+                    <span className="font-medium text-foreground">20/25</span>
+                  </div>
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>Network contribution</span>
+                    <span className="font-medium text-foreground">15/20</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
