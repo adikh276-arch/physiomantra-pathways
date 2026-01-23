@@ -4,7 +4,7 @@ import LayerCard from '@/components/dashboard/LayerCard';
 import { useProgress } from '@/contexts/ProgressContext';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { RotateCcw, Target } from 'lucide-react';
+import { RotateCcw } from 'lucide-react';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -16,10 +16,18 @@ const Dashboard = () => {
     resetProgress,
   } = useProgress();
 
+  const layer0Progress = getLayerProgress('layer0');
   const layer1Progress = getLayerProgress('layer1');
   const layer2Progress = getLayerProgress('layer2');
   const layer3Progress = getLayerProgress('layer3');
   const layer4Progress = getLayerProgress('layer4');
+  const layer6Progress = getLayerProgress('layer6');
+
+  const getLayer0Status = () => {
+    if (isLayerComplete('layer0')) return 'complete';
+    if (layer0Progress.completed > 0) return 'in-progress';
+    return 'active';
+  };
 
   const getLayer1Status = () => {
     if (isLayerComplete('layer1')) return 'complete';
@@ -48,6 +56,20 @@ const Dashboard = () => {
     return 'in-progress';
   };
 
+  const getLayer6Status = () => {
+    if (isLayerComplete('layer6')) return 'complete';
+    if (layer6Progress.completed > 0) return 'in-progress';
+    return 'active';
+  };
+
+  const getNextLayer0Step = () => {
+    if (!progress.layer0.welcome) return 'Intern Welcome';
+    if (!progress.layer0.verification) return 'Intern Verification';
+    if (!progress.layer0.howItWorks) return 'How Intern Sessions Work';
+    if (!progress.layer0.earnings) return 'Earnings & Expectations';
+    return '';
+  };
+
   const getNextLayer1Step = () => {
     if (!progress.layer1.welcome) return 'Welcome to PhysioMantra';
     if (!progress.layer1.verification) return 'Profile Verification';
@@ -63,6 +85,22 @@ const Dashboard = () => {
     if (!progress.layer2.professionalIdentity) return 'Professional Identity Setup';
     if (!progress.layer2.localAwareness) return 'Local Awareness & Referrals';
     return '';
+  };
+
+  const getNextLayer6Step = () => {
+    if (!progress.layer6.becomeMentor) return 'Become a Mentor';
+    if (!progress.layer6.mentorAssignment) return 'Mentor Assignment';
+    if (!progress.layer6.internFeedback) return 'Intern Feedback Loop';
+    if (!progress.layer6.internGraduation) return 'Intern Graduation';
+    return '';
+  };
+
+  const handleLayer0Click = () => {
+    if (!progress.layer0.welcome) navigate('/layer0/welcome');
+    else if (!progress.layer0.verification) navigate('/layer0/verification');
+    else if (!progress.layer0.howItWorks) navigate('/layer0/how-it-works');
+    else if (!progress.layer0.earnings) navigate('/layer0/earnings');
+    else navigate('/layer0/welcome');
   };
 
   const handleLayer1Click = () => {
@@ -104,6 +142,14 @@ const Dashboard = () => {
     navigate('/layer5/community');
   };
 
+  const handleLayer6Click = () => {
+    if (!progress.layer6.becomeMentor) navigate('/layer6/become-mentor');
+    else if (!progress.layer6.mentorAssignment) navigate('/layer6/mentor-assignment');
+    else if (!progress.layer6.internFeedback) navigate('/layer6/intern-feedback');
+    else if (!progress.layer6.internGraduation) navigate('/layer6/intern-graduation');
+    else navigate('/layer6/become-mentor');
+  };
+
   return (
     <DashboardLayout>
       <div className="max-w-3xl mx-auto px-6 py-12 space-y-12">
@@ -134,6 +180,14 @@ const Dashboard = () => {
           <div className="absolute left-[28px] top-6 bottom-6 w-0.5 bg-border/50 -z-10 hidden sm:block"></div>
 
           <div className="space-y-8">
+            <LayerCard
+              layerNumber={0}
+              title="Intern Program (Parallel Track)"
+              status={getLayer0Status()}
+              progress={layer0Progress}
+              nextStep={getNextLayer0Step()}
+              onClick={handleLayer0Click}
+            />
             <LayerCard
               layerNumber={1}
               title="Foundation & Credibility"
@@ -173,6 +227,14 @@ const Dashboard = () => {
               status="active" // Always visible/active for preview, or logic based on layer 4
               nextStep="Join the community"
               onClick={handleLayer5Click}
+            />
+            <LayerCard
+              layerNumber={6}
+              title="Mentorship & Leadership"
+              status={getLayer6Status()}
+              progress={layer6Progress}
+              nextStep={getNextLayer6Step()}
+              onClick={handleLayer6Click}
             />
           </div>
         </div>

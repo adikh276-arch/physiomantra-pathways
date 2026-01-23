@@ -9,6 +9,12 @@ import { ProgressProvider } from "@/contexts/ProgressContext";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 
+// Layer 0 Intern Pathways
+import InternWelcome from "./pages/layer0/InternWelcome";
+import InternVerification from "./pages/layer0/InternVerification";
+import InternHowItWorks from "./pages/layer0/InternHowItWorks";
+import InternEarnings from "./pages/layer0/InternEarnings";
+
 // Layer 1 Pathways
 import WelcomePathway from "./pages/layer1/WelcomePathway";
 import VerificationPathway from "./pages/layer1/VerificationPathway";
@@ -38,6 +44,12 @@ import CommunityPathway from "./pages/layer5/CommunityPathway";
 import TrainingPathway from "./pages/layer5/TrainingPathway";
 import RecognitionPathway from "./pages/layer5/RecognitionPathway";
 
+// Layer 6 Mentorship Pathways
+import BecomeMentor from "./pages/layer6/BecomeMentor";
+import MentorAssignment from "./pages/layer6/MentorAssignment";
+import InternFeedback from "./pages/layer6/InternFeedback";
+import InternGraduation from "./pages/layer6/InternGraduation";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -50,6 +62,12 @@ const App = () => (
           <Routes>
             {/* Main Routes */}
             <Route path="/" element={<Dashboard />} />
+
+            {/* Layer 0: Intern Track */}
+            <Route path="/layer0/welcome" element={<InternWelcome />} />
+            <Route path="/layer0/verification" element={<InternVerification />} />
+            <Route path="/layer0/how-it-works" element={<InternHowItWorks />} />
+            <Route path="/layer0/earnings" element={<InternEarnings />} />
 
             {/* Layer 1: Foundation */}
             <Route path="/layer1/welcome" element={<WelcomePathway />} />
@@ -79,6 +97,12 @@ const App = () => (
             <Route path="/layer5/community" element={<CommunityPathway />} />
             <Route path="/layer5/training" element={<TrainingPathway />} />
             <Route path="/layer5/recognition" element={<RecognitionPathway />} />
+
+            {/* Layer 6: Mentorship */}
+            <Route path="/layer6/become-mentor" element={<BecomeMentor />} />
+            <Route path="/layer6/mentor-assignment" element={<MentorAssignment />} />
+            <Route path="/layer6/intern-feedback" element={<InternFeedback />} />
+            <Route path="/layer6/intern-graduation" element={<InternGraduation />} />
 
             {/* Catch-all */}
             <Route path="*" element={<NotFound />} />

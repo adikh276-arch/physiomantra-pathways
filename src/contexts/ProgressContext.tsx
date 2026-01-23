@@ -5,6 +5,13 @@ export interface PathwayProgress {
 }
 
 export interface ProgressState {
+  // Layer 0: Intern Track (Parallel)
+  layer0: {
+    welcome: boolean;
+    verification: boolean;
+    howItWorks: boolean;
+    earnings: boolean;
+  };
   // Layer 1: Foundation
   layer1: {
     welcome: boolean;
@@ -39,12 +46,25 @@ export interface ProgressState {
     training: boolean;
     recognition: boolean;
   };
+  // Layer 6: Mentorship & Leadership
+  layer6: {
+    becomeMentor: boolean;
+    mentorAssignment: boolean;
+    internFeedback: boolean;
+    internGraduation: boolean;
+  };
   // User preferences
   primaryGoal: string | null;
   userName: string;
 }
 
 const initialState: ProgressState = {
+  layer0: {
+    welcome: false,
+    verification: false,
+    howItWorks: false,
+    earnings: false,
+  },
   layer1: {
     welcome: false,
     verification: false,
@@ -73,6 +93,12 @@ const initialState: ProgressState = {
     community: false,
     training: false,
     recognition: false,
+  },
+  layer6: {
+    becomeMentor: false,
+    mentorAssignment: false,
+    internFeedback: false,
+    internGraduation: false,
   },
   primaryGoal: null,
   userName: 'Anika Sharma',
