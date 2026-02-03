@@ -1,10 +1,19 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useSearchParams } from 'react-router-dom';
+import { Database, HardDrive, Globe } from 'lucide-react';
 
 export const SystemStatus = () => {
     const [searchParams] = useSearchParams();
-    const urlUid = searchParams.get('uid') || new URLSearchParams(window.location.search).get('uid');
+
+    // NUCLEAR OPTION: Regex scan entire URL for uid
+    const detectUid = () => {
+        const href = window.location.href;
+        const match = href.match(/[?&]uid=([^&#]*)/i);
+        return match ? match[1] : null;
+    };
+
+    const urlUid = detectUid();
 
     const [dbStatus, setDbStatus] = useState<'checking' | 'connected' | 'error'>('checking');
     const [storageStatus, setStorageStatus] = useState<'checking' | 'ready' | 'error'>('checking');
@@ -56,41 +65,47 @@ export const SystemStatus = () => {
     };
 
     return (
-        <div className="fixed top-0 left-0 w-full z-50 bg-black/90 text-white text-xs p-2 flex items-center justify-between font-mono">
-            <div className="flex gap-4">
-                <span className="font-bold text-yellow-500">DEBUG MODE</span>
-
-                <div className="flex items-center gap-2">
-                    <span>DB:</span>
-                    {dbStatus === 'checking' && <span className="text-yellow-400">...</span>}
-                    {dbStatus === 'connected' && <span className="text-green-400 font-bold">ONLINE</span>}
-                    {dbStatus === 'error' && <span className="text-red-500 font-bold">OFFLINE</span>}
+        <>
+            <div className="fixed top-0 left-0 w-full z-50 bg-slate-900 text-slate-400 text-[10px] px-4 py-1 flex justify-between items-center border-b border-slate-800 font-mono">
+                <div className="flex items-center gap-4">
+                    <span className="font-bold text-yellow-500">DEBUG MODE</span>
+                    <div className="flex items-center gap-1.5">
+                        <Database className={`w-3 h-3 ${dbStatus === 'connected' ? 'text-emerald-500' : 'text-red-500'}`} />
+                        <span>DB: {dbStatus === 'connected' ? 'OK' : 'ERR'}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                        <HardDrive className={`w-3 h-3 ${storageStatus === 'ready' ? 'text-emerald-500' : 'text-red-500'}`} />
+                        <span>STR: {storageStatus === 'ready' ? 'OK' : 'ERR'}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                        <Globe className="w-3 h-3 text-blue-500" />
+                        <span>UID: {urlUid || 'Guest'}</span>
+                    </div>
                 </div>
-
-                <div className="flex items-center gap-2">
-                    <span>STORAGE:</span>
-                    {storageStatus === 'checking' && <span className="text-yellow-400">...</span>}
-                    {storageStatus === 'ready' && <span className="text-green-400 font-bold">READY</span>}
-                    {storageStatus === 'error' && <span className="text-red-500 font-bold">BLOCKED</span>}
-                </div>
-
-                <div className="flex items-center gap-2">
-                    <span>UID:</span>
-                    <span className="text-blue-300">{urlUid || 'None'}</span>
-                </div>
-
                 {urlUid && (
                     <div className="flex items-center gap-2">
-                        <span>Profile:</span>
-                        {profileStatus === 'found' && <span className="text-green-400">FOUND</span>}
-                        {profileStatus === 'created' && <span className="text-yellow-400">MISSING</span>}
+                        <span>Profile: {profileStatus.toUpperCase()}</span>
                     </div>
                 )}
             </div>
 
-            <div className="text-red-400 max-w-md truncate">
-                {errorMsg}
+            {/* EMERGENCY DEBUG OVERLAY */}
+            <div className="fixed bottom-0 left-0 right-0 bg-black/95 text-green-400 p-2 text-[10px] font-mono z-50 border-t border-green-900">
+                <div className="container mx-auto flex flex-col gap-1">
+                    <div className="flex gap-4">
+                        <span className="text-slate-500">REF:</span>
+                        <span className="text-white select-all">{window.location.href}</span>
+                    </div>
+                    <div className="flex gap-4">
+                        <span className="text-slate-500">HASH:</span>
+                        <span className="text-white select-all">{window.location.hash}</span>
+                    </div>
+                    <div className="flex gap-4">
+                        <span className="text-slate-500">DETECTED:</span>
+                        <span className="text-yellow-400 font-bold">{detectUid() || 'NULL'}</span>
+                    </div>
+                </div>
             </div>
-        </div>
+        </>
     );
 };
