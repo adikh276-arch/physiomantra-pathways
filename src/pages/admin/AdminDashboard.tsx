@@ -333,12 +333,24 @@ const AdminDashboard = () => {
                                                     {item.details && (
                                                         <div className="mt-2 bg-slate-50 p-2 rounded text-xs border border-slate-200">
                                                             <p className="font-semibold mb-1 text-slate-700">Submission Details:</p>
-                                                            <ul className="space-y-1 text-slate-600 font-mono">
+                                                            <ul className="space-y-1.5 text-slate-600">
                                                                 {Object.entries(item.details).map(([key, value]) => (
-                                                                    <li key={key} className="flex flex-col">
-                                                                        <span className="capitalize text-slate-400">{key}:</span>
-                                                                        <span className="pl-2">
-                                                                            {typeof value === 'object' ? JSON.stringify(value, null, 0) : String(value)}
+                                                                    <li key={key} className="flex flex-col border-b border-slate-100 last:border-0 pb-1">
+                                                                        <span className="capitalize text-[10px] font-bold text-slate-400">{key.replace(/_/g, ' ')}</span>
+                                                                        <span className="pl-1 text-xs">
+                                                                            {Array.isArray(value) ? (
+                                                                                <div className="flex flex-wrap gap-1 mt-0.5">
+                                                                                    {value.map((v: any, i: number) => (
+                                                                                        <span key={i} className="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-[10px]">{String(v)}</span>
+                                                                                    ))}
+                                                                                </div>
+                                                                            ) : typeof value === 'object' && value !== null ? (
+                                                                                <pre className="text-[10px] bg-slate-100 p-1 rounded mt-0.5 overflow-x-auto">
+                                                                                    {JSON.stringify(value, null, 2)}
+                                                                                </pre>
+                                                                            ) : (
+                                                                                <span className="font-medium text-slate-800">{String(value)}</span>
+                                                                            )}
                                                                         </span>
                                                                     </li>
                                                                 ))}
