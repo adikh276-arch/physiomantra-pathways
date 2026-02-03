@@ -64,27 +64,7 @@ export const SystemStatus = () => {
         }
     };
 
-    return (
-        <div className="fixed top-0 left-0 w-full z-50 bg-slate-900 text-slate-400 text-[10px] px-4 py-1 flex justify-between items-center border-b border-slate-800 font-mono">
-            <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1.5">
-                    <Database className={`w-3 h-3 ${dbStatus === 'connected' ? 'text-emerald-500' : 'text-red-500'}`} />
-                    <span>DB: {dbStatus === 'connected' ? 'OK' : 'ERR'}</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                    <HardDrive className={`w-3 h-3 ${storageStatus === 'ready' ? 'text-emerald-500' : 'text-red-500'}`} />
-                    <span>STR: {storageStatus === 'ready' ? 'OK' : 'ERR'}</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                    <Globe className="w-3 h-3 text-blue-500" />
-                    <span>UID: {urlUid || 'Guest'}</span>
-                </div>
-            </div>
-            {urlUid && (
-                <div className="flex items-center gap-2">
-                    <span>Profile: {profileStatus.toUpperCase()}</span>
-                </div>
-            )}
-        </div>
-    );
+    // Final Polish: User requested clean UI, so we hide the status bar.
+    // The checks still run to warm up connections, but no visual output.
+    return null;
 };
