@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import PathwayLayout from '@/components/pathway/PathwayLayout';
 import { useProgress } from '@/contexts/ProgressContext';
 import { toast } from 'sonner';
@@ -9,10 +10,23 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 const InternFeedback = () => {
     const { completePathway } = useProgress();
     const navigate = useNavigate();
+    const [rating, setRating] = useState('good');
+    const [feedback, setFeedback] = useState('');
 
     const handleComplete = () => {
-        completePathway('layer6', 'internFeedback');
-        toast.success('Feedback system verified.');
+        if (!feedback) {
+            toast.error('Please provide at least one note of feedback.');
+            return;
+        }
+
+        const formData = {
+            rating,
+            feedback,
+            sessionType: 'simulation'
+        };
+
+        completePathway('layer6', 'internFeedback', null, formData);
+        toast.success('Feedback recorded.');
         navigate('/layer6/intern-graduation');
     };
 
@@ -38,7 +52,7 @@ const InternFeedback = () => {
                     <div className="space-y-4">
                         <div className="space-y-2">
                             <Label>Quick Rating</Label>
-                            <RadioGroup defaultValue="good" className="flex gap-4">
+                            <RadioGroup value={rating} onValueChange={setRating} className="flex gap-4">
                                 <div className="flex items-center space-x-2">
                                     <RadioGroupItem value="needs_work" id="r1" />
                                     <Label htmlFor="r1">Needs Work</Label>
@@ -56,7 +70,11 @@ const InternFeedback = () => {
 
                         <div className="space-y-2">
                             <Label>One Improvement Note (Mandatory but lightweight)</Label>
-                            <Textarea placeholder="e.g. Focus more on eccentrics for this tendinopathy..." />
+                            <Textarea
+                                placeholder="e.g. Focus more on eccentrics for this tendinopathy..."
+                                value={feedback}
+                                onChange={(e) => setFeedback(e.target.value)}
+                            />
                         </div>
                     </div>
                 </div>
