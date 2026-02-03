@@ -196,6 +196,7 @@ const AdminDashboard = () => {
                     <Table>
                         <TableHeader className="bg-slate-50">
                             <TableRow>
+                                <TableHead className="w-24">UID</TableHead>
                                 <TableHead className="w-[300px]">Provider Profile</TableHead>
                                 <TableHead>Role</TableHead>
                                 <TableHead className="text-center">Score</TableHead>
@@ -212,7 +213,7 @@ const AdminDashboard = () => {
                         <TableBody>
                             {loading ? (
                                 <TableRow>
-                                    <TableCell colSpan={11} className="h-32 text-center text-slate-500">
+                                    <TableCell colSpan={12} className="h-32 text-center text-slate-500">
                                         <div className="flex justify-center items-center gap-2">
                                             <Loader2 className="w-5 h-5 animate-spin" /> Processing Data...
                                         </div>
@@ -220,7 +221,7 @@ const AdminDashboard = () => {
                                 </TableRow>
                             ) : filteredProviders.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={11} className="h-32 text-center text-slate-500">
+                                    <TableCell colSpan={12} className="h-32 text-center text-slate-500">
                                         No providers found.
                                     </TableCell>
                                 </TableRow>
@@ -231,6 +232,11 @@ const AdminDashboard = () => {
                                         className="hover:bg-slate-50/50 transition-colors cursor-pointer group"
                                         onClick={() => setSelectedProvider(p)}
                                     >
+                                        <TableCell>
+                                            <span className="font-mono text-xs text-slate-400" title={p.user.id}>
+                                                {p.user.id.substring(0, 8)}...
+                                            </span>
+                                        </TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-3">
                                                 <div className="w-9 h-9 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 font-bold text-xs uppercase">
