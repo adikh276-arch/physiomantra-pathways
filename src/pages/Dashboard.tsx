@@ -1,6 +1,7 @@
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import Badge from '@/components/dashboard/Badge';
 import LayerCard from '@/components/dashboard/LayerCard';
+import PhysioBusinessScore from '@/components/dashboard/PhysioBusinessScore';
 import { useProgress } from '@/contexts/ProgressContext';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -177,28 +178,7 @@ const Dashboard = () => {
             </div>
 
             {/* Physio Business Score */}
-            {isLayerComplete('layer1') && (
-              <div className="bg-card border shadow-sm rounded-xl p-4 w-full max-w-md mx-auto animate-fade-in">
-                <div className="flex justify-between items-center mb-3">
-                  <h3 className="font-bold text-lg">Physio Business Score</h3>
-                  <span className="text-2xl font-black text-primary">72/100</span>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>Patient flow</span>
-                    <span className="font-medium text-foreground">18/25</span>
-                  </div>
-                  <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>Outreach activity</span>
-                    <span className="font-medium text-foreground">20/25</span>
-                  </div>
-                  <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>Network contribution</span>
-                    <span className="font-medium text-foreground">15/20</span>
-                  </div>
-                </div>
-              </div>
-            )}
+            {isLayerComplete('layer1') && <PhysioBusinessScore />}
           </div>
         </div>
 

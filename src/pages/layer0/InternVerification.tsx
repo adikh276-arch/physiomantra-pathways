@@ -8,19 +8,74 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { useProgress } from '@/contexts/ProgressContext';
 import { toast } from 'sonner';
-import { Check } from 'lucide-react';
+import { Check, Loader2, FileCheck } from 'lucide-react';
+import { supabase } from '@/lib/supabaseClient';
 
 const InternVerification = () => {
-    const { completePathway } = useProgress();
+    const { completePathway, progress } = useProgress();
     const navigate = useNavigate();
-    const [file, setFile] = useState<File | null>(null);
+
+    // Form State
+    const [college, setCollege] = useState('');
+    const [year, setYear] = useState('');
+    const [interests, setInterests] = useState('');
+
+    // Upload State
+    const [uploaded, setUploaded] = useState(false);
+    const [uploading, setUploading] = useState(false);
+    const [evidenceUrl, setEvidenceUrl] = useState<string | null>(null);
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files || e.target.files.length === 0) return;
+        const file = e.target.files[0];
+
+        try {
+            setUploading(true);
+            const userId = progress.userId || 'guest';
+            const fileExt = file.name.split('.').pop();
+            const cleanFileName = file.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            const filePath = `${userId}/intern/${Date.now()}_${cleanFileName}.${fileExt}`;
+
+            // Upload
+            const { error: uploadError } = await supabase.storage
+                .from('pathway-uploads')
+                .upload(filePath, file);
+
+            if (uploadError) throw uploadError;
+
+            // Get URL
+            const { data: { publicUrl } } = supabase.storage
+                .from('pathway-uploads')
+                .getPublicUrl(filePath);
+
+            setEvidenceUrl(publicUrl);
+            setUploaded(true);
+            toast.success("ID Card Uploaded!");
+
+        } catch (error: any) {
+            console.error("Upload failed", error);
+            toast.error("Upload Failed", { description: error.message });
+        } finally {
+            setUploading(false);
+        }
+    };
 
     const handleComplete = () => {
-        if (!file) {
-            toast.error('Please upload your college ID or internship letter');
+        if (!uploaded || !college || !year) {
+            toast.error('Please complete all fields and upload ID');
             return;
         }
-        completePathway('layer0', 'verification');
+
+        const formData = {
+            college,
+            year,
+            interests,
+            role: 'intern'
+        };
+
+        // Complete with Evidence and Data
+        completePathway('layer0', 'verification', evidenceUrl!, formData);
+
         toast.success('Verification submitted for manual approval');
         navigate('/layer0/how-it-works');
     };
@@ -37,12 +92,16 @@ const InternVerification = () => {
                 <div className="grid gap-6">
                     <div className="space-y-2">
                         <Label>College / University</Label>
-                        <Input placeholder="Enter your college name" />
+                        <Input
+                            placeholder="Enter your college name"
+                            value={college}
+                            onChange={(e) => setCollege(e.target.value)}
+                        />
                     </div>
 
                     <div className="space-y-2">
                         <Label>Year of Study</Label>
-                        <Select>
+                        <Select value={year} onValueChange={setYear}>
                             <SelectTrigger>
                                 <SelectValue placeholder="Select year" />
                             </SelectTrigger>
@@ -56,21 +115,32 @@ const InternVerification = () => {
 
                     <div className="space-y-2">
                         <Label>Areas of Interest</Label>
-                        <Input placeholder="e.g. Ortho, Sports, Neuro" />
+                        <Input
+                            placeholder="e.g. Ortho, Sports, Neuro"
+                            value={interests}
+                            onChange={(e) => setInterests(e.target.value)}
+                        />
                     </div>
 
                     <div className="space-y-2">
                         <Label>Upload College ID / Internship Letter</Label>
                         <div className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:bg-muted/50 transition-colors cursor-pointer relative">
+                            {/* Hidden File Input */}
                             <input
                                 type="file"
-                                className="absolute inset-0 opacity-0 cursor-pointer"
-                                onChange={(e) => setFile(e.target.files?.[0] || null)}
+                                className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                                onChange={handleFileUpload}
+                                disabled={uploading || uploaded}
                             />
-                            {file ? (
+
+                            {uploading ? (
+                                <div className="text-muted-foreground flex items-center justify-center gap-2">
+                                    <Loader2 className="w-4 h-4 animate-spin" /> Uploading...
+                                </div>
+                            ) : uploaded ? (
                                 <div className="text-success flex items-center justify-center gap-2">
-                                    <Check className="w-4 h-4" />
-                                    {file.name}
+                                    <FileCheck className="w-5 h-5" />
+                                    <span className="font-semibold">ID Document Secured</span>
                                 </div>
                             ) : (
                                 <div className="text-muted-foreground">

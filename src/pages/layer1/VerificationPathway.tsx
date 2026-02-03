@@ -7,9 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
-import { Upload, FileCheck } from 'lucide-react';
+import { Upload, FileCheck, Loader2 } from 'lucide-react';
 import { useProgress } from '@/contexts/ProgressContext';
 import { toast } from 'sonner';
+import { supabase } from '@/lib/supabaseClient';
 
 const qualifications = ['BPT', 'MPT', 'PhD', 'DPT', 'Other'];
 const specializations = [
@@ -23,6 +24,9 @@ const timeSlots = ['Morning', 'Afternoon', 'Evening', 'Flexible'];
 
 const VerificationPathway = () => {
   const [uploaded, setUploaded] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [evidenceUrl, setEvidenceUrl] = useState<string | null>(null);
+
   const [qualification, setQualification] = useState('');
   const [selectedSpecs, setSelectedSpecs] = useState<string[]>([]);
   const [city, setCity] = useState('');
@@ -31,12 +35,44 @@ const VerificationPathway = () => {
   const [selectedTimes, setSelectedTimes] = useState<string[]>([]);
   const [sessions, setSessions] = useState([25]);
 
-  const { completePathway } = useProgress();
+  const { completePathway, progress } = useProgress();
   const navigate = useNavigate();
 
-  const handleUpload = () => {
-    setUploaded(true);
-    toast.success('License uploaded successfully!');
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    const file = e.target.files[0];
+
+    try {
+      setUploading(true);
+      const userId = progress.userId || 'guest';
+      // Sanitize filename
+      const fileExt = file.name.split('.').pop();
+      const cleanFileName = file.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      const filePath = `${userId}/verification/${Date.now()}_${cleanFileName}.${fileExt}`;
+
+      // Upload to Supabase
+      const { error: uploadError } = await supabase.storage
+        .from('pathway-uploads')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      // Get Public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('pathway-uploads')
+        .getPublicUrl(filePath);
+
+      // Success
+      setEvidenceUrl(publicUrl);
+      setUploaded(true);
+      toast.success("File Uploaded!", { description: "License document secured." });
+
+    } catch (error: any) {
+      console.error("Upload failed", error);
+      toast.error("Upload Failed", { description: error.message });
+    } finally {
+      setUploading(false);
+    }
   };
 
   const toggleItem = (item: string, list: string[], setList: (items: string[]) => void) => {
@@ -49,11 +85,26 @@ const VerificationPathway = () => {
 
   const handleComplete = () => {
     if (!uploaded || !qualification || selectedSpecs.length === 0 || !city) {
-      toast.error('Please complete all required fields');
+      toast.error('Please complete all required fields (and upload license)');
       return;
     }
-    completePathway('layer1', 'verification');
-    toast.success('License submitted for review');
+
+    // Collect Data
+    const formData = {
+      qualification,
+      specializations: selectedSpecs,
+      city,
+      languages: selectedLangs,
+      availability: {
+        days: selectedDays,
+        times: selectedTimes,
+        sessions: sessions[0]
+      }
+    };
+
+    // Pass Evidence URL AND form details to context
+    completePathway('layer1', 'verification', evidenceUrl!, formData);
+    toast.success('License & Profile submitted for review');
     navigate('/layer1/how-it-works');
   };
 
@@ -72,14 +123,24 @@ const VerificationPathway = () => {
 
         {/* License Upload */}
         <div className="space-y-3">
-          <Label className="text-base font-semibold">1. Upload License</Label>
+          <Label className="text-base font-semibold">1. Upload License (Required)</Label>
           <p className="text-sm text-muted-foreground">State physiotherapy council registration</p>
-          <div className="flex gap-3">
-            <Input type="file" className="flex-1" disabled={uploaded} />
-            <Button onClick={handleUpload} disabled={uploaded} variant={uploaded ? 'outline' : 'default'}>
-              {uploaded ? <FileCheck className="w-4 h-4 mr-2" /> : <Upload className="w-4 h-4 mr-2" />}
-              {uploaded ? 'Uploaded' : 'Upload'}
-            </Button>
+          <div className="flex gap-3 items-center">
+            <Input
+              type="file"
+              className="flex-1"
+              disabled={uploaded || uploading}
+              onChange={handleFileUpload}
+            />
+            {uploading ? (
+              <Button disabled variant="outline"><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Uploading...</Button>
+            ) : uploaded ? (
+              <Button disabled variant="outline" className="text-green-600 border-green-200 bg-green-50">
+                <FileCheck className="w-4 h-4 mr-2" /> Uploaded
+              </Button>
+            ) : (
+              <Button disabled variant="secondary">Select File</Button>
+            )}
           </div>
         </div>
 
@@ -105,11 +166,10 @@ const VerificationPathway = () => {
             {specializations.map(spec => (
               <div
                 key={spec}
-                className={`flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition-colors ${
-                  selectedSpecs.includes(spec)
+                className={`flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition-colors ${selectedSpecs.includes(spec)
                     ? 'border-primary bg-primary/10'
                     : 'border-border hover:border-primary/50'
-                }`}
+                  }`}
                 onClick={() => toggleItem(spec, selectedSpecs, setSelectedSpecs)}
               >
                 <Checkbox checked={selectedSpecs.includes(spec)} />
@@ -143,11 +203,10 @@ const VerificationPathway = () => {
                   <button
                     key={lang}
                     type="button"
-                    className={`px-3 py-1 rounded-full text-sm border transition-colors ${
-                      selectedLangs.includes(lang)
+                    className={`px-3 py-1 rounded-full text-sm border transition-colors ${selectedLangs.includes(lang)
                         ? 'border-primary bg-primary text-primary-foreground'
                         : 'border-border hover:border-primary/50'
-                    }`}
+                      }`}
                     onClick={() => toggleItem(lang, selectedLangs, setSelectedLangs)}
                   >
                     {lang}
@@ -169,11 +228,10 @@ const VerificationPathway = () => {
                   <button
                     key={day}
                     type="button"
-                    className={`px-4 py-2 rounded-lg text-sm border transition-colors ${
-                      selectedDays.includes(day)
+                    className={`px-4 py-2 rounded-lg text-sm border transition-colors ${selectedDays.includes(day)
                         ? 'border-primary bg-primary text-primary-foreground'
                         : 'border-border hover:border-primary/50'
-                    }`}
+                      }`}
                     onClick={() => toggleItem(day, selectedDays, setSelectedDays)}
                   >
                     {day}
@@ -188,11 +246,10 @@ const VerificationPathway = () => {
                   <button
                     key={time}
                     type="button"
-                    className={`px-4 py-2 rounded-lg text-sm border transition-colors ${
-                      selectedTimes.includes(time)
+                    className={`px-4 py-2 rounded-lg text-sm border transition-colors ${selectedTimes.includes(time)
                         ? 'border-primary bg-primary text-primary-foreground'
                         : 'border-border hover:border-primary/50'
-                    }`}
+                      }`}
                     onClick={() => toggleItem(time, selectedTimes, setSelectedTimes)}
                   >
                     {time}

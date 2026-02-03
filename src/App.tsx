@@ -4,9 +4,11 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import { ProgressProvider } from "@/contexts/ProgressContext";
+import { SystemStatus } from "@/components/SystemStatus";
 
 // Main Pages
 import Dashboard from "./pages/Dashboard";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
 // Layer 0 Intern Pathways
@@ -54,14 +56,16 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <ProgressProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <HashRouter>
+    <HashRouter>
+      <ProgressProvider>
+        <TooltipProvider>
+          <SystemStatus />
+          <Toaster />
+          <Sonner />
           <Routes>
             {/* Main Routes */}
             <Route path="/" element={<Dashboard />} />
+            <Route path="/admin" element={<AdminDashboard />} />
 
             {/* Layer 0: Intern Track */}
             <Route path="/layer0/welcome" element={<InternWelcome />} />
@@ -107,9 +111,9 @@ const App = () => (
             {/* Catch-all */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </HashRouter>
-      </TooltipProvider>
-    </ProgressProvider>
+        </TooltipProvider>
+      </ProgressProvider>
+    </HashRouter>
   </QueryClientProvider>
 );
 

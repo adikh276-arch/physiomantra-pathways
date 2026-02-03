@@ -53,7 +53,7 @@ const LayerCard = ({
         <div className={cn(
           "flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center text-xl shadow-sm transition-colors",
           "bg-gradient-to-br from-primary/10 to-primary/5 text-primary border border-primary/10",
-          isComplete && "from-success/10 to-success/5 text-success border-success/10",
+          isComplete && "from-blue-600/10 to-blue-500/5 text-blue-600 border-blue-600/10",
           isLocked && "bg-muted text-muted-foreground border-transparent"
         )}>
           {isComplete ? <Check className="w-6 h-6" /> :
@@ -76,13 +76,13 @@ const LayerCard = ({
               </span>
             )}
             {isComplete && (
-              <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-success/10 text-success text-[10px] font-bold border border-success/20">
+              <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-600/10 text-blue-600 text-[10px] font-bold border border-blue-600/20">
                 <Check className="w-3 h-3" />
                 COMPLETE
               </span>
             )}
             {status === 'active' && (
-              <span className="px-2.5 py-0.5 rounded-full bg-accent/10 text-accent text-[10px] font-bold border border-accent/20">
+              <span className="px-2.5 py-0.5 rounded-full bg-sky-500/10 text-sky-600 text-[10px] font-bold border border-sky-500/20">
                 AVAILABLE
               </span>
             )}
@@ -100,7 +100,7 @@ const LayerCard = ({
             <div className="space-y-3">
               <div className="h-2 w-full bg-muted/30 rounded-full overflow-hidden">
                 <div
-                  className={cn("h-full transition-all duration-500 rounded-full", isComplete ? "bg-success" : "bg-primary")}
+                  className={cn("h-full transition-all duration-500 rounded-full", isComplete ? "bg-blue-600" : "bg-primary")}
                   style={{ width: `${progressPercentage}%` }}
                 />
               </div>

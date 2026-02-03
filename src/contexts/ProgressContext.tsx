@@ -1,165 +1,234 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-
-export interface PathwayProgress {
-  [key: string]: boolean;
-}
+import { supabase } from '@/lib/supabaseClient';
+import { useSearchParams } from 'react-router-dom';
+import { toast } from 'sonner';
 
 export interface ProgressState {
-  // Layer 0: Intern Track (Parallel)
-  layer0: {
-    welcome: boolean;
-    verification: boolean;
-    howItWorks: boolean;
-    earnings: boolean;
-  };
-  // Layer 1: Foundation
-  layer1: {
-    welcome: boolean;
-    verification: boolean;
-    howItWorks: boolean;
-    clinicalTools: boolean;
-    earnings: boolean;
-  };
-  // Layer 2: Earnings & Patient Flow
-  layer2: {
-    gettingPatients: boolean;
-    bringPatients: boolean;
-    professionalIdentity: boolean;
-    localAwareness: boolean;
-  };
-  // Layer 3: Network Expansion
-  layer3: {
-    invitePhysios: boolean;
-    clinicConnection: boolean;
-    specialistProfile: boolean;
-  };
-  // Layer 4: Corporate Growth
-  layer4: {
-    wellnessPartner: boolean;
-    corporateReadiness: boolean;
-    shareLeads: boolean;
-    assistedOnboarding: boolean;
-  };
-  // Layer 5: Community (Always Active)
-  layer5: {
-    community: boolean;
-    training: boolean;
-    recognition: boolean;
-  };
-  // Layer 6: Mentorship & Leadership
-  layer6: {
-    becomeMentor: boolean;
-    mentorAssignment: boolean;
-    internFeedback: boolean;
-    internGraduation: boolean;
-  };
-  // User preferences
+  layer0: { [key: string]: boolean };
+  layer1: { [key: string]: boolean };
+  layer2: { [key: string]: boolean };
+  layer3: { [key: string]: boolean };
+  layer4: { [key: string]: boolean };
+  layer5: { [key: string]: boolean };
+  layer6: { [key: string]: boolean };
   primaryGoal: string | null;
   userName: string;
+  userId?: string;
+  role?: 'admin' | 'provider' | 'intern';
 }
 
 const initialState: ProgressState = {
-  layer0: {
-    welcome: false,
-    verification: false,
-    howItWorks: false,
-    earnings: false,
-  },
-  layer1: {
-    welcome: false,
-    verification: false,
-    howItWorks: false,
-    clinicalTools: false,
-    earnings: false,
-  },
-  layer2: {
-    gettingPatients: false,
-    bringPatients: false,
-    professionalIdentity: false,
-    localAwareness: false,
-  },
-  layer3: {
-    invitePhysios: false,
-    clinicConnection: false,
-    specialistProfile: false,
-  },
-  layer4: {
-    wellnessPartner: false,
-    corporateReadiness: false,
-    shareLeads: false,
-    assistedOnboarding: false,
-  },
-  layer5: {
-    community: false,
-    training: false,
-    recognition: false,
-  },
-  layer6: {
-    becomeMentor: false,
-    mentorAssignment: false,
-    internFeedback: false,
-    internGraduation: false,
-  },
+  layer0: { welcome: false, verification: false, howItWorks: false, earnings: false },
+  layer1: { welcome: false, verification: false, howItWorks: false, clinicalTools: false, earnings: false },
+  layer2: { gettingPatients: false, bringPatients: false, professionalIdentity: false, localAwareness: false },
+  layer3: { invitePhysios: false, clinicConnection: false, specialistProfile: false },
+  layer4: { wellnessPartner: false, corporateReadiness: false, shareLeads: false, assistedOnboarding: false },
+  layer5: { community: false, training: false, recognition: false },
+  layer6: { becomeMentor: false, mentorAssignment: false, internFeedback: false, internGraduation: false },
   primaryGoal: null,
-  userName: 'Anika Sharma',
+  userName: 'Guest Provider',
 };
 
 interface ProgressContextType {
   progress: ProgressState;
-  completePathway: (layer: keyof Omit<ProgressState, 'primaryGoal' | 'userName'>, pathway: string) => void;
+  completePathway: (layer: string, pathway: string, evidenceUrl?: string, details?: any) => Promise<void>;
   setPrimaryGoal: (goal: string) => void;
-  isLayerComplete: (layer: keyof Omit<ProgressState, 'primaryGoal' | 'userName'>) => boolean;
-  isLayerUnlocked: (layer: keyof Omit<ProgressState, 'primaryGoal' | 'userName'>) => boolean;
-  getLayerProgress: (layer: keyof Omit<ProgressState, 'primaryGoal' | 'userName'>) => { completed: number; total: number };
+  isLayerComplete: (layer: string) => boolean;
+  isLayerUnlocked: (layer: string) => boolean;
+  getLayerProgress: (layer: string) => { completed: number; total: number };
   resetProgress: () => void;
+  loading: boolean;
 }
 
 const ProgressContext = createContext<ProgressContextType | undefined>(undefined);
 
 export const ProgressProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [progress, setProgress] = useState<ProgressState>(() => {
-    const stored = localStorage.getItem('physiomantra_progress');
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        // Merge with initialState to ensure new layers are present
-        return { ...initialState, ...parsed, layer0: parsed.layer0 || initialState.layer0, layer6: parsed.layer6 || initialState.layer6 };
-      } catch (e) {
-        return initialState;
-      }
-    }
-    return initialState;
-  });
+  const [searchParams] = useSearchParams();
+  // ROBUST: Check both Router params (after #) and Window params (before #)
+  const urlUid = searchParams.get('uid') || new URLSearchParams(window.location.search).get('uid');
 
+  const [progress, setProgress] = useState<ProgressState>(initialState);
+  const [loading, setLoading] = useState(true);
+
+  // Load from DB or LocalStorage
   useEffect(() => {
-    localStorage.setItem('physiomantra_progress', JSON.stringify(progress));
-  }, [progress]);
+    const loadProgress = async () => {
+      setLoading(true);
 
-  const completePathway = (layer: keyof Omit<ProgressState, 'primaryGoal' | 'userName'>, pathway: string) => {
-    setProgress((prev) => ({
-      ...prev,
+      // Strategy 1: URL UID
+      if (urlUid) {
+
+        // Prevent legacy local storage
+        localStorage.removeItem('physiomantra_progress');
+
+        try {
+          // Fetch Profile
+          const { data: profile, error: profileError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', urlUid)
+            .single();
+
+          if (profile && !profileError) {
+
+            // Fetch Progress
+            const { data: progressData } = await supabase
+              .from('pathway_progress')
+              .select('*')
+              .eq('user_id', urlUid);
+
+            const newProgress = JSON.parse(JSON.stringify(initialState));
+            newProgress.userId = profile.id;
+            newProgress.userName = profile.full_name || 'Provider';
+            newProgress.role = profile.role;
+
+            if (progressData) {
+              progressData.forEach((row: any) => {
+                if (newProgress[row.layer_id]) {
+                  newProgress[row.layer_id][row.pathway_id] = row.status === 'completed';
+                }
+              });
+            }
+
+            setProgress(newProgress);
+          } else {
+            // PROFILE NOT FOUND -> CREATE IT
+            console.log("Creating new profile for", urlUid);
+
+            const { error: insertError } = await supabase.from('profiles').insert({
+              id: urlUid,
+              full_name: 'New Provider',
+              role: 'provider',
+              email: `provider_${urlUid.substring(0, Math.min(6, urlUid.length))}@example.com`
+            });
+
+            if (!insertError) {
+              toast.success("New Profile Created!", { description: `Welcome provider ${urlUid}` });
+              const newProgress = { ...initialState, userId: urlUid, userName: 'New Provider' };
+              setProgress(newProgress);
+            } else {
+              console.error("Failed to create profile", insertError);
+              toast.error("Failed to create profile", { description: insertError.message });
+              // Fallback
+              setProgress(initialState);
+            }
+          }
+        } catch (e: any) {
+          console.error("Supabase load error", e);
+          toast.error("Database connection error");
+        }
+      } else {
+        // Strategy 2: Fallback to LocalStorage
+        const stored = localStorage.getItem('physiomantra_progress');
+        if (stored) {
+          try {
+            const parsed = JSON.parse(stored);
+            setProgress({ ...initialState, ...parsed });
+          } catch (e) {
+            setProgress(initialState);
+          }
+        }
+      }
+      setLoading(false);
+    };
+
+    loadProgress();
+  }, [urlUid]);
+
+  // Sync to LocalStorage (Backup)
+  useEffect(() => {
+    if (!urlUid) {
+      localStorage.setItem('physiomantra_progress', JSON.stringify(progress));
+    }
+  }, [progress, urlUid]);
+
+  const completePathway = async (layer: string, pathway: string, evidenceUrl?: string, details?: any) => {
+    // 1. Optimistic Update
+    const updatedProgress = {
+      ...progress,
       [layer]: {
-        ...prev[layer],
+        ...progress[layer as keyof ProgressState] as any,
         [pathway]: true,
       },
-    }));
+    };
+
+    setProgress(updatedProgress);
+
+    // 2. DB Update
+    if (progress.userId) {
+      try {
+        // A. Save Pathway Progress
+        const { error: progressError } = await supabase
+          .from('pathway_progress')
+          .upsert({
+            user_id: progress.userId,
+            layer_id: layer,
+            pathway_id: pathway,
+            status: 'completed',
+            evidence_url: evidenceUrl || null,
+            details: details || null, // SAVE FORM DATA
+            completed_at: new Date().toISOString()
+          }, { onConflict: 'user_id,layer_id,pathway_id' });
+
+        if (progressError) throw progressError;
+
+        // B. Calculate and Save Business Score
+        const p = updatedProgress;
+        const layer1Completed = Object.values(p.layer1).every(v => v);
+        const foundationScore = layer1Completed ? 30 : Math.round((Object.values(p.layer1).filter(Boolean).length / Object.keys(p.layer1).length) * 30);
+
+        let patientFlowScore = 0;
+        if (p.layer2.gettingPatients) patientFlowScore += 10;
+        if (p.layer2.bringPatients) patientFlowScore += 10;
+        if (p.layer2.professionalIdentity) patientFlowScore += 5;
+
+        let outreachScore = 0;
+        if (p.layer2.localAwareness) outreachScore += 10;
+        if (p.layer4.corporateReadiness) outreachScore += 10;
+        if (p.layer4.shareLeads) outreachScore += 5;
+
+        let networkScore = 0;
+        if (p.layer3.invitePhysios) networkScore += 10;
+        if (p.layer5.community) networkScore += 10;
+
+        const totalScore = foundationScore + patientFlowScore + outreachScore + networkScore;
+
+        const { error: scoreError } = await supabase.from('business_scores').upsert({
+          user_id: progress.userId,
+          foundation_score: foundationScore,
+          patient_flow_score: patientFlowScore,
+          outreach_score: outreachScore,
+          network_score: networkScore,
+          total_score: totalScore,
+          calculated_at: new Date().toISOString()
+        }, { onConflict: 'user_id' });
+
+        if (scoreError) throw scoreError;
+
+        toast.success("Progress Saved", { description: "Synced to cloud database." });
+
+      } catch (e: any) {
+        console.error("Failed to save progress", e);
+        toast.error("Save Failed", { description: e.message || "Unknown DB Error" });
+      }
+    }
   };
 
   const setPrimaryGoal = (goal: string) => {
     setProgress((prev) => ({ ...prev, primaryGoal: goal }));
   };
 
-  const isLayerComplete = (layer: keyof Omit<ProgressState, 'primaryGoal' | 'userName'>) => {
-    const layerData = progress[layer];
+  const isLayerComplete = (layer: string) => {
+    const layerData = (progress as any)[layer];
+    if (!layerData) return false;
     return Object.values(layerData).every((v) => v === true);
   };
 
-  const isLayerUnlocked = (layer: keyof Omit<ProgressState, 'primaryGoal' | 'userName'>) => {
-    return true; // All layers unlocked by default
-  };
+  const isLayerUnlocked = (layer: string) => true;
 
-  const getLayerProgress = (layer: keyof Omit<ProgressState, 'primaryGoal' | 'userName'>) => {
-    const layerData = progress[layer];
+  const getLayerProgress = (layer: string) => {
+    const layerData = (progress as any)[layer];
+    if (!layerData) return { completed: 0, total: 0 };
     const values = Object.values(layerData);
     const completed = values.filter((v) => v === true).length;
     return { completed, total: values.length };
@@ -180,6 +249,7 @@ export const ProgressProvider: React.FC<{ children: ReactNode }> = ({ children }
         isLayerUnlocked,
         getLayerProgress,
         resetProgress,
+        loading
       }}
     >
       {children}

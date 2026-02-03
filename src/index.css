@@ -30,12 +30,13 @@
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    /* Accent - Teal/Cyan (Growth) instead of Orange */
-    --accent: 175 80% 40%;
+    /* Accent - Blue/Cyan (Growth) - Replaced Greenish Teal */
+    --accent: 195 85% 45%;
     --accent-foreground: 0 0% 100%;
 
-    /* Success - Emerald */
-    --success: 150 80% 40%;
+    /* Success - Blue-leaning Emerald or Pure Blue to avoid green */
+    /* Keeping a subtle success color but making it cooler/bluer */
+    --success: 210 90% 50%; /* Using a bright blue for success instead of green */
     --success-foreground: 0 0% 100%;
 
     /* Warning - Amber (kept for alerts only) */
@@ -45,7 +46,7 @@
     /* Destructive - Red */
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-
+    
     /* Locked state - Gray */
     --locked: 210 10% 80%;
     --locked-foreground: 215 10% 50%;
@@ -68,8 +69,9 @@
 
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(215 90% 52%), hsl(200 90% 50%));
-    --gradient-success: linear-gradient(135deg, hsl(150 80% 40%), hsl(160 80% 45%));
-    --gradient-accent: linear-gradient(135deg, hsl(175 80% 40%), hsl(190 90% 50%));
+    /* Success Request: "No greenish colors". Changed to Blue Gradient */
+    --gradient-success: linear-gradient(135deg, hsl(210 90% 50%), hsl(200 80% 60%)); 
+    --gradient-accent: linear-gradient(135deg, hsl(195 85% 45%), hsl(210 90% 50%));
     --gradient-sidebar: linear-gradient(180deg, hsl(215 40% 15%), hsl(220 40% 10%));
     --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(210 20% 98%));
     --gradient-hero: linear-gradient(135deg, hsl(215 40% 20%), hsl(215 35% 25%));
@@ -97,12 +99,12 @@
     --muted: 215 20% 18%;
     --muted-foreground: 215 15% 65%;
 
-    /* Accent - Teal/Cyan (Vibrant) */
-    --accent: 175 80% 50%;
+    /* Accent - Blue/Cyan (Vibrant) */
+    --accent: 195 85% 55%;
     --accent-foreground: 0 0% 100%;
 
-    /* Success - Emerald */
-    --success: 150 70% 50%;
+    /* Success - Bright Blue */
+    --success: 210 90% 60%;
     --success-foreground: 0 0% 100%;
 
     /* Warning - Amber */

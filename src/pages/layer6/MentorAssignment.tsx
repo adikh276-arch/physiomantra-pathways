@@ -2,8 +2,9 @@ import { useNavigate } from 'react-router-dom';
 import PathwayLayout from '@/components/pathway/PathwayLayout';
 import { useProgress } from '@/contexts/ProgressContext';
 import { toast } from 'sonner';
-import { MapPin, Calendar, Star, User } from 'lucide-react';
+import { MapPin, Calendar, Star, User, ShieldCheck } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 const MentorAssignment = () => {
     const { completePathway } = useProgress();
@@ -44,8 +45,6 @@ const MentorAssignment = () => {
                                 <span className="text-sm">{item.text}</span>
                             </div>
                         ))}
-
-                 // Defining ShieldCheck locally as it was missed in import above (fixed below)
                     </div>
                 </div>
 
@@ -79,9 +78,5 @@ const MentorAssignment = () => {
         </PathwayLayout>
     );
 };
-
-// Fix for icon import, adding ShieldCheck to lucide-react import
-import { ShieldCheck, User as UserIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 export default MentorAssignment;
