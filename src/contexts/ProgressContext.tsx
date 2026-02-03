@@ -44,8 +44,16 @@ const ProgressContext = createContext<ProgressContextType | undefined>(undefined
 
 export const ProgressProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [searchParams] = useSearchParams();
-  // ROBUST: Check both Router params (after #) and Window params (before #)
-  const urlUid = searchParams.get('uid') || new URLSearchParams(window.location.search).get('uid');
+
+  // NUCLEAR OPTION: Regex scan entire URL for uid
+  // Matches: ?uid=xyz, &uid=xyz, etc.
+  const getUidFromUrl = () => {
+    const href = window.location.href;
+    const match = href.match(/[?&]uid=([^&#]*)/i);
+    return match ? match[1] : null;
+  };
+
+  const urlUid = getUidFromUrl();
 
   const [progress, setProgress] = useState<ProgressState>(initialState);
   const [loading, setLoading] = useState(true);
