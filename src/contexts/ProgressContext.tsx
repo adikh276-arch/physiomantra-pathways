@@ -57,8 +57,10 @@ export const ProgressProvider: React.FC<{ children: ReactNode }> = ({ children }
 
       // Strategy 1: URL UID
       if (urlUid) {
+        const cleanUid = urlUid.trim().toLowerCase(); // Normalize UID
+        console.log(`[Init] detected UID: ${cleanUid}`);
 
-        // Prevent legacy local storage
+        // Prevent legacy local storage conflict
         localStorage.removeItem('physiomantra_progress');
 
         try {
@@ -66,16 +68,17 @@ export const ProgressProvider: React.FC<{ children: ReactNode }> = ({ children }
           const { data: profile, error: profileError } = await supabase
             .from('profiles')
             .select('*')
-            .eq('id', urlUid)
+            .eq('id', cleanUid)
             .single();
 
           if (profile && !profileError) {
+            toast.info(`Welcome back, ${profile.full_name || 'Provider'} (${cleanUid})`);
 
             // Fetch Progress
             const { data: progressData } = await supabase
               .from('pathway_progress')
               .select('*')
-              .eq('user_id', urlUid);
+              .eq('user_id', cleanUid);
 
             const newProgress = JSON.parse(JSON.stringify(initialState));
             newProgress.userId = profile.id;
@@ -93,22 +96,23 @@ export const ProgressProvider: React.FC<{ children: ReactNode }> = ({ children }
             setProgress(newProgress);
           } else {
             // PROFILE NOT FOUND -> CREATE IT
-            console.log("Creating new profile for", urlUid);
+            console.log("Creating new profile for", cleanUid);
+            toast.loading(`Creating new profile for: ${cleanUid}...`, { id: 'create-profile' });
 
             const { error: insertError } = await supabase.from('profiles').insert({
-              id: urlUid,
+              id: cleanUid,
               full_name: 'New Provider',
               role: 'provider',
-              email: `provider_${urlUid.substring(0, Math.min(6, urlUid.length))}@example.com`
+              email: `provider_${cleanUid.substring(0, Math.min(6, cleanUid.length))}@example.com`
             });
 
             if (!insertError) {
-              toast.success("New Profile Created!", { description: `Welcome provider ${urlUid}` });
-              const newProgress = { ...initialState, userId: urlUid, userName: 'New Provider' };
+              toast.success("New Profile Created!", { id: 'create-profile' });
+              const newProgress = { ...initialState, userId: cleanUid, userName: 'New Provider' };
               setProgress(newProgress);
             } else {
               console.error("Failed to create profile", insertError);
-              toast.error("Failed to create profile", { description: insertError.message });
+              toast.error("Failed to create profile", { description: insertError.message, id: 'create-profile' });
               // Fallback
               setProgress(initialState);
             }
