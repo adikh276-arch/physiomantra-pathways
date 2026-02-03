@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import { ProgressProvider } from "@/contexts/ProgressContext";
 import { SystemStatus } from "@/components/SystemStatus";
+import { AppLayout } from "@/components/layout/AppLayout";
 
 // Main Pages
 import Dashboard from "./pages/Dashboard";
@@ -59,58 +60,59 @@ const App = () => (
     <HashRouter>
       <ProgressProvider>
         <TooltipProvider>
-          <SystemStatus />
           <Toaster />
           <Sonner />
-          <Routes>
-            {/* Main Routes */}
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/admin" element={<AdminDashboard />} />
+          <AppLayout>
+            <Routes>
+              {/* Main Routes */}
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/admin" element={<AdminDashboard />} />
 
-            {/* Layer 0: Intern Track */}
-            <Route path="/layer0/welcome" element={<InternWelcome />} />
-            <Route path="/layer0/verification" element={<InternVerification />} />
-            <Route path="/layer0/how-it-works" element={<InternHowItWorks />} />
-            <Route path="/layer0/earnings" element={<InternEarnings />} />
+              {/* Layer 0: Intern Track */}
+              <Route path="/layer0/welcome" element={<InternWelcome />} />
+              <Route path="/layer0/verification" element={<InternVerification />} />
+              <Route path="/layer0/how-it-works" element={<InternHowItWorks />} />
+              <Route path="/layer0/earnings" element={<InternEarnings />} />
 
-            {/* Layer 1: Foundation */}
-            <Route path="/layer1/welcome" element={<WelcomePathway />} />
-            <Route path="/layer1/verification" element={<VerificationPathway />} />
-            <Route path="/layer1/how-it-works" element={<HowItWorksPathway />} />
-            <Route path="/layer1/clinical-tools" element={<ClinicalToolsPathway />} />
-            <Route path="/layer1/earnings" element={<EarningsPathway />} />
+              {/* Layer 1: Foundation */}
+              <Route path="/layer1/welcome" element={<WelcomePathway />} />
+              <Route path="/layer1/verification" element={<VerificationPathway />} />
+              <Route path="/layer1/how-it-works" element={<HowItWorksPathway />} />
+              <Route path="/layer1/clinical-tools" element={<ClinicalToolsPathway />} />
+              <Route path="/layer1/earnings" element={<EarningsPathway />} />
 
-            {/* Layer 2: Earnings & Patient Flow */}
-            <Route path="/layer2/getting-patients" element={<GettingPatientsPathway />} />
-            <Route path="/layer2/bring-patients" element={<BringPatientsPathway />} />
-            <Route path="/layer2/professional-identity" element={<ProfessionalIdentityPathway />} />
-            <Route path="/layer2/local-awareness" element={<LocalAwarenessPathway />} />
+              {/* Layer 2: Earnings & Patient Flow */}
+              <Route path="/layer2/getting-patients" element={<GettingPatientsPathway />} />
+              <Route path="/layer2/bring-patients" element={<BringPatientsPathway />} />
+              <Route path="/layer2/professional-identity" element={<ProfessionalIdentityPathway />} />
+              <Route path="/layer2/local-awareness" element={<LocalAwarenessPathway />} />
 
-            {/* Layer 3: Network Expansion */}
-            <Route path="/layer3/invite-physios" element={<InvitePhysiosPathway />} />
-            <Route path="/layer3/clinic-connection" element={<ClinicConnectionPathway />} />
-            <Route path="/layer3/specialist-profile" element={<SpecialistProfilePathway />} />
+              {/* Layer 3: Network Expansion */}
+              <Route path="/layer3/invite-physios" element={<InvitePhysiosPathway />} />
+              <Route path="/layer3/clinic-connection" element={<ClinicConnectionPathway />} />
+              <Route path="/layer3/specialist-profile" element={<SpecialistProfilePathway />} />
 
-            {/* Layer 4: Corporate Growth */}
-            <Route path="/layer4/wellness-partner" element={<WellnessPartnerPathway />} />
-            <Route path="/layer4/corporate-readiness" element={<CorporateReadinessPathway />} />
-            <Route path="/layer4/share-leads" element={<ShareLeadsPathway />} />
-            <Route path="/layer4/assisted-onboarding" element={<AssistedOnboardingPathway />} />
+              {/* Layer 4: Corporate Growth */}
+              <Route path="/layer4/wellness-partner" element={<WellnessPartnerPathway />} />
+              <Route path="/layer4/corporate-readiness" element={<CorporateReadinessPathway />} />
+              <Route path="/layer4/share-leads" element={<ShareLeadsPathway />} />
+              <Route path="/layer4/assisted-onboarding" element={<AssistedOnboardingPathway />} />
 
-            {/* Layer 5: Community */}
-            <Route path="/layer5/community" element={<CommunityPathway />} />
-            <Route path="/layer5/training" element={<TrainingPathway />} />
-            <Route path="/layer5/recognition" element={<RecognitionPathway />} />
+              {/* Layer 5: Community */}
+              <Route path="/layer5/community" element={<CommunityPathway />} />
+              <Route path="/layer5/training" element={<TrainingPathway />} />
+              <Route path="/layer5/recognition" element={<RecognitionPathway />} />
 
-            {/* Layer 6: Mentorship */}
-            <Route path="/layer6/become-mentor" element={<BecomeMentor />} />
-            <Route path="/layer6/mentor-assignment" element={<MentorAssignment />} />
-            <Route path="/layer6/intern-feedback" element={<InternFeedback />} />
-            <Route path="/layer6/intern-graduation" element={<InternGraduation />} />
+              {/* Layer 6: Mentorship */}
+              <Route path="/layer6/become-mentor" element={<BecomeMentor />} />
+              <Route path="/layer6/mentor-assignment" element={<MentorAssignment />} />
+              <Route path="/layer6/intern-feedback" element={<InternFeedback />} />
+              <Route path="/layer6/intern-graduation" element={<InternGraduation />} />
 
-            {/* Catch-all */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+              {/* Catch-all */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AppLayout>
         </TooltipProvider>
       </ProgressProvider>
     </HashRouter>
